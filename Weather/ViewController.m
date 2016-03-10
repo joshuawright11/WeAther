@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 #import "Constants.h"
+#import "WebManager.h"
+#import "Utilities.h"
 
 @interface ViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -29,14 +31,40 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *recentsTableView;
 
+@property (weak, nonatomic) WeatherData *currentData;
+
 @end
 
 @implementation ViewController
 
+- (void)setCurrentData:(WeatherData *)currentData {
+    _currentData = currentData;
+    
+    self.todayLabel.text = [@"Today in " stringByAppendingString:currentData.name];
+    
+    NSNumber *temperatureInF = @([currentData.temperature doubleValue]*(9.0/5.0) - 459.67);
+    NSString *temperatureText = [NSString stringWithFormat:@"%d", [temperatureInF intValue]];
+    self.temperatureDataLabel.text = [temperatureText stringByAppendingString:@"° F"];
+    self.humidityDataLabel.text = [[currentData.humidityPercentage stringValue] stringByAppendingString:@"%"];
+    self.windDataLabel.text = [[currentData.windMPH stringValue] stringByAppendingString:@" MPH"];
+    self.cloudsDataLabel.text = currentData.generalDescription;
+    
+    self.sunriseDataLabel.text = [Utilities timeString:currentData.sunrise];
+    self.sunsetDataLabel.text = [Utilities timeString:currentData.sunset];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self doDesign];
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    [WebManager getWeatherDataForLocationString:@"06268" completion:^(WeatherData *weatherData, BOOL success) {
+        if (success) {
+            self.currentData = weatherData;
+        } else {
+            NSLog(@"SAD!");
+        }
+    }];
+    
 }
 
 - (void)doDesign {
