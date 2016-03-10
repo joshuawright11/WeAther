@@ -56,13 +56,21 @@
     [self doDesign];
     self.searchState = YES;
     self.recentSearches = [[NSMutableArray alloc] init];
+    
+    // Setup the table view header
+    UILabel *labelView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.recentsTableView.frame.size.width, 30)];
+    labelView.text = @"Recent Searches";
+    labelView.textAlignment = NSTextAlignmentCenter;
+    self.recentsTableView.tableHeaderView = labelView;
 }
 
 - (void)checkWeatherForInput:(NSString *)input {
     [WebManager getWeatherDataForLocationString:input completion:^(WeatherData *weatherData, BOOL success) {
         if (success) {
             self.currentData = weatherData;
+            self.searchState = NO;
         } else {
+            // Invalid input or network error
             NSLog(@"Uhh Houston? We have a problem.");
         }
     }];
@@ -148,8 +156,6 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self.zipTextField endEditing:YES];
     [self checkWeatherForInput:textField.text];
-    
-    self.searchState = NO;
     
     return YES;
 }

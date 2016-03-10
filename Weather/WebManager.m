@@ -76,9 +76,12 @@ static NSString *API_KEY_PARAMETER = @"&APPID=ae79b6cc63f8961324d6a003c6febaeb";
     // If there are numbers and it contains a ',' assume that it is a coordinate
     } else if ([input containsString:@","]){
         return Coordinates;
-    // Otherwise assume a Zipcode
-    } else {
+    // If it is 5 characters long (and contains a number) assume it's a zip
+    } else if (input.length == 5){
         return Zip;
+    // Otherwise assume invalid input
+    } else {
+        return Invalid;
     }
 }
 
