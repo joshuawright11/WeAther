@@ -11,7 +11,7 @@
 #import "WebManager.h"
 #import "Utilities.h"
 
-@interface ViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface ViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *zipTextField;
 
@@ -33,6 +33,12 @@
 
 @property (weak, nonatomic) WeatherData *currentData;
 
+@property (nonatomic) BOOL searchState;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *zipYConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleYConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *recentsConstraint;
+
 @end
 
 @implementation ViewController
@@ -53,18 +59,59 @@
     self.sunsetDataLabel.text = [Utilities timeString:currentData.sunset];
 }
 
+- (void)setSearchState:(BOOL)searchState {
+    if (searchState && !_searchState) {
+        [self animateToSearchState];
+    } else if (!searchState && _searchState){
+        [self animateToDisplayState];
+    }
+    
+    _searchState = searchState;
+}
+
+- (void)animateToSearchState {
+    [self.view layoutIfNeeded];
+    [UIView animateWithDuration:0.7 animations:^{
+        [self moveViewsToSearchState];
+        [self.view layoutIfNeeded];
+    }];
+}
+
+- (void)moveViewsToSearchState {
+    self.zipYConstraint.constant += 100;
+    self.titleYConstraint.constant += 500;
+    self.recentsConstraint.constant += 300;
+}
+
+- (void)animateToDisplayState {
+    [self.view layoutIfNeeded];
+    [UIView animateWithDuration:0.7 animations:^{
+        [self moveViewsToDisplayState];
+        [self.view layoutIfNeeded];
+    }];
+}
+
+- (void)moveViewsToDisplayState {
+    self.zipYConstraint.constant -= 100;
+    self.titleYConstraint.constant -= 500;
+    self.recentsConstraint.constant -= 300;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self doDesign];
-    
-    [WebManager getWeatherDataForLocationString:@"06268" completion:^(WeatherData *weatherData, BOOL success) {
+    self.searchState = YES;
+//    [self checkWeatherForInput:@"06268"];
+}
+
+- (void)checkWeatherForInput:(NSString *)input {
+    [WebManager getWeatherDataForLocationString:input completion:^(WeatherData *weatherData, BOOL success) {
         if (success) {
             self.currentData = weatherData;
         } else {
             NSLog(@"SAD!");
         }
     }];
-    
 }
 
 - (void)doDesign {
@@ -87,6 +134,11 @@
     self.sunBackgroundView.layer.cornerRadius = 9.0;
     self.recentsTableView.layer.cornerRadius = 9.0;
     self.zipTextField.layer.cornerRadius = 9.0;
+    
+    // Text indent for UITextField
+    UIView *spacerView = [[UIView alloc] initWithFrame:CGRectMake(0,0,20,1)];
+    self.zipTextField.leftView = spacerView;
+    self.zipTextField.leftViewMode = UITextFieldViewModeAlways;
 }
 
 - (void)viewDidLayoutSubviews {
@@ -120,6 +172,15 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
     return cell;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self.zipTextField endEditing:YES];
+    [self checkWeatherForInput:textField.text];
+    
+    self.searchState = NO;
+    
+    return YES;
 }
 
 @end
