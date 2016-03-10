@@ -20,6 +20,8 @@ typedef NS_ENUM(NSInteger, InputType) {
 };
 
 static NSString *BASE_URL = @"http://api.openweathermap.org/data/2.5/weather";
+
+// The site needs an API key
 static NSString *API_KEY_PARAMETER = @"&APPID=ae79b6cc63f8961324d6a003c6febaeb";
 
 + (void)getWeatherDataForLocationString:(NSString *)input completion:(void (^)(WeatherData *weatherData, BOOL success))callback {
