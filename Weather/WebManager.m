@@ -11,6 +11,7 @@
 
 @implementation WebManager
 
+// Simple enum to reflect the type of input
 typedef NS_ENUM(NSInteger, InputType) {
     Coordinates,
     Name,
@@ -27,6 +28,7 @@ static NSString *API_KEY_PARAMETER = @"&APPID=ae79b6cc63f8961324d6a003c6febaeb";
 
     NSString *parameter;
     switch (inputType) {
+        // Not functional yet.
         case Coordinates: {
             double lat = 1.0;
             double lon = 2.0;
@@ -46,8 +48,11 @@ static NSString *API_KEY_PARAMETER = @"&APPID=ae79b6cc63f8961324d6a003c6febaeb";
     
     NSString *requestURL = [[BASE_URL stringByAppendingString:parameter] stringByAppendingString:API_KEY_PARAMETER];
     
+    // For spaces in the input
+    NSString *encodedURL = [requestURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:requestURL
+    [manager GET:encodedURL
       parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
@@ -61,8 +66,20 @@ static NSString *API_KEY_PARAMETER = @"&APPID=ae79b6cc63f8961324d6a003c6febaeb";
      ];
 }
 
+
+// Check the input to see what kind of search should be performed (very basic)
 + (InputType)checkInput:(NSString *)input {
-    return Zip;
+    
+    // If there are no numbers assume that it is a place name
+    if ([input rangeOfCharacterFromSet:[NSCharacterSet decimalDigitCharacterSet]].location == NSNotFound) {
+        return Name;
+    // If there are numbers and it contains a ',' assume that it is a coordinate
+    } else if ([input containsString:@","]){
+        return Coordinates;
+    // Otherwise assume a Zipcode
+    } else {
+        return Zip;
+    }
 }
 
 @end

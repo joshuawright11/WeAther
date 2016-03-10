@@ -14,6 +14,8 @@
 
 @interface ViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 
+#pragma mark - UIView Outlets
+
 @property (weak, nonatomic) IBOutlet UITextField *zipTextField;
 
 @property (weak, nonatomic) IBOutlet UILabel *todayLabel;
@@ -32,82 +34,28 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *recentsTableView;
 
-@property (strong, nonatomic) WeatherData *currentData;
-
-@property (strong, nonatomic) NSMutableArray *recentSearches;
-
-@property (nonatomic) BOOL searchState;
+#pragma mark - AutoLayout Constraints
+// for animations
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *zipYConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleYConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *recentsYConstraint;
 
+#pragma mark - Private Instance Properties
+
+@property (strong, nonatomic) WeatherData *currentData;
+@property (strong, nonatomic) NSMutableArray *recentSearches;
+@property (nonatomic) BOOL searchState;
+
 @end
 
 @implementation ViewController
-
-- (void)setCurrentData:(WeatherData *)currentData {
-    _currentData = currentData;
-    [self.recentSearches addObject:currentData];
-    [self.recentsTableView reloadData];
-    
-    self.todayLabel.text = [@"Today in " stringByAppendingString:currentData.name];
-    
-    NSNumber *temperatureInF = @([currentData.temperature doubleValue]*(9.0/5.0) - 459.67);
-    NSString *temperatureText = [NSString stringWithFormat:@"%d", [temperatureInF intValue]];
-    self.temperatureDataLabel.text = [temperatureText stringByAppendingString:@"° F"];
-    self.humidityDataLabel.text = [[currentData.humidityPercentage stringValue] stringByAppendingString:@"%"];
-    self.windDataLabel.text = [[currentData.windMPH stringValue] stringByAppendingString:@" MPH"];
-    self.cloudsDataLabel.text = currentData.generalDescription;
-    
-    self.sunriseDataLabel.text = [Utilities timeString:currentData.sunrise];
-    self.sunsetDataLabel.text = [Utilities timeString:currentData.sunset];
-}
-
-- (void)setSearchState:(BOOL)searchState {
-    if (searchState && !_searchState) {
-        [self animateToSearchState];
-    } else if (!searchState && _searchState){
-        [self animateToDisplayState];
-    }
-    
-    _searchState = searchState;
-}
-
-- (void)animateToSearchState {
-    [self.view layoutIfNeeded];
-    [UIView animateWithDuration:0.7 animations:^{
-        [self moveViewsToSearchState];
-        [self.view layoutIfNeeded];
-    }];
-}
-
-- (void)moveViewsToSearchState {
-    self.zipYConstraint.constant += 100;
-    self.titleYConstraint.constant += 500;
-    self.recentsYConstraint.constant += 300;
-}
-
-- (void)animateToDisplayState {
-    [self.view layoutIfNeeded];
-    [UIView animateWithDuration:0.7 animations:^{
-        [self moveViewsToDisplayState];
-        [self.view layoutIfNeeded];
-    }];
-}
-
-- (void)moveViewsToDisplayState {
-    self.zipYConstraint.constant -= 100;
-    self.titleYConstraint.constant -= 500;
-    self.recentsYConstraint.constant -= 300;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self doDesign];
     self.searchState = YES;
     self.recentSearches = [[NSMutableArray alloc] init];
-//    [self checkWeatherForInput:@"06268"];
 }
 
 - (void)checkWeatherForInput:(NSString *)input {
@@ -115,9 +63,19 @@
         if (success) {
             self.currentData = weatherData;
         } else {
-            NSLog(@"SAD!");
+            NSLog(@"Uhh Houston? We have a problem.");
         }
     }];
+}
+
+- (void)viewDidLayoutSubviews {
+    [self setupSunGradients];
+}
+
+- (void)setupSunGradients {
+    self.sunBackgroundView.clipsToBounds = YES;
+    [self addGradientToView:self.sunBackgroundView withTopColor:wColorSunriseTop bottomColor:wColorSunriseBottom leftHalf:YES];
+    [self addGradientToView:self.sunBackgroundView withTopColor:wColorSunsetTop bottomColor:wColorSunsetBottom leftHalf:NO];
 }
 
 - (void)doDesign {
@@ -147,16 +105,6 @@
     self.zipTextField.leftViewMode = UITextFieldViewModeAlways;
 }
 
-- (void)viewDidLayoutSubviews {
-    [self setupSunGradients];
-}
-
-- (void)setupSunGradients {
-    self.sunBackgroundView.clipsToBounds = YES;
-    [self addGradientToView:self.sunBackgroundView withTopColor:wColorSunriseTop bottomColor:wColorSunriseBottom leftHalf:YES];
-    [self addGradientToView:self.sunBackgroundView withTopColor:wColorSunsetTop bottomColor:wColorSunsetBottom leftHalf:NO];
-}
-
 - (void)addGradientToView:(UIView *)view withTopColor:(UIColor *)topColor bottomColor:(UIColor *)bottomColor leftHalf:(BOOL)left{
     
     // Create the gradient
@@ -171,6 +119,8 @@
     [view.layer insertSublayer:viewGradient atIndex:0];
 }
 
+#pragma mark - UITableViewDataSource
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.recentSearches.count;
 }
@@ -184,6 +134,17 @@
     return cell;
 }
 
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    self.currentData = self.recentSearches[indexPath.row];
+    [self.zipTextField endEditing:YES];
+    self.searchState = NO;
+}
+
+#pragma mark - UITextFieldDelegate
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self.zipTextField endEditing:YES];
     [self checkWeatherForInput:textField.text];
@@ -194,9 +155,70 @@
 }
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    // Reanimate to searching state and clear the input
     self.searchState = YES;
     textField.text = @"";
     return YES;
+}
+
+#pragma mark - Setters
+
+- (void)setCurrentData:(WeatherData *)currentData {
+    _currentData = currentData;
+    [self.recentSearches addObject:currentData];
+    [self.recentsTableView reloadData];
+    
+    self.todayLabel.text = [@"Today in " stringByAppendingString:currentData.name];
+    
+    NSNumber *temperatureInF = @([currentData.temperature doubleValue]*(9.0/5.0) - 459.67);
+    NSString *temperatureText = [NSString stringWithFormat:@"%d", [temperatureInF intValue]];
+    self.temperatureDataLabel.text = [temperatureText stringByAppendingString:@"° F"];
+    self.humidityDataLabel.text = [[currentData.humidityPercentage stringValue] stringByAppendingString:@"%"];
+    self.windDataLabel.text = [[currentData.windMPH stringValue] stringByAppendingString:@" MPH"];
+    self.cloudsDataLabel.text = currentData.generalDescription;
+    
+    self.sunriseDataLabel.text = [Utilities timeString:currentData.sunrise];
+    self.sunsetDataLabel.text = [Utilities timeString:currentData.sunset];
+}
+
+- (void)setSearchState:(BOOL)searchState {
+    if (searchState && !_searchState) {
+        [self animateToSearchState];
+    } else if (!searchState && _searchState){
+        [self animateToDisplayState];
+    }
+    
+    _searchState = searchState;
+}
+
+#pragma mark - Animation Methods
+
+- (void)animateToSearchState {
+    [self.view layoutIfNeeded];
+    [UIView animateWithDuration:0.7 animations:^{
+        [self moveViewsToSearchState];
+        [self.view layoutIfNeeded];
+    }];
+}
+
+- (void)moveViewsToSearchState {
+    self.zipYConstraint.constant += 100;
+    self.titleYConstraint.constant += 500;
+    self.recentsYConstraint.constant += 300;
+}
+
+- (void)animateToDisplayState {
+    [self.view layoutIfNeeded];
+    [UIView animateWithDuration:0.7 animations:^{
+        [self moveViewsToDisplayState];
+        [self.view layoutIfNeeded];
+    }];
+}
+
+- (void)moveViewsToDisplayState {
+    self.zipYConstraint.constant -= 100;
+    self.titleYConstraint.constant -= 500;
+    self.recentsYConstraint.constant -= 300;
 }
 
 @end

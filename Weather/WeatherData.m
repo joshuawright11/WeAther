@@ -10,6 +10,7 @@
 
 @implementation WeatherData
 
+// Needs error handling
 + (id)fromJSON:(NSDictionary *)dict {
     
     WeatherData *data = [[WeatherData alloc] init];

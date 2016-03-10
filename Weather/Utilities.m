@@ -16,8 +16,7 @@
 
     NSString *dateString = [timeFormatter stringFromDate: date];
     
-    if([dateString characterAtIndex:0] == '0')
-    {
+    if([dateString characterAtIndex:0] == '0') {
         dateString = [dateString substringFromIndex:1];
     }
     
