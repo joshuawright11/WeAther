@@ -62,6 +62,11 @@
     labelView.text = @"Recent Searches";
     labelView.textAlignment = NSTextAlignmentCenter;
     self.recentsTableView.tableHeaderView = labelView;
+    
+    // Dismiss keyboard on tap
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
+    
+    [self.view addGestureRecognizer:tapGestureRecognizer];
 }
 
 - (void)checkWeatherForInput:(NSString *)input {
@@ -225,6 +230,12 @@
     self.zipYConstraint.constant -= 100;
     self.titleYConstraint.constant -= 500;
     self.recentsYConstraint.constant -= 300;
+}
+
+#pragma mark - Gesture recognizer selectors
+
+- (void)tapped:(UIGestureRecognizer *)gr {
+    [self.zipTextField endEditing:YES];
 }
 
 @end
