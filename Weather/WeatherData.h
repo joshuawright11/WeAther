@@ -21,6 +21,9 @@
 @property (nonatomic, strong) NSDate *sunset;
 @property (nonatomic, strong) NSDate *sunrise;
 
+// Search Data
+@property (nonatomic, strong) NSDate *searchTime;
+
 // Convenience Initializer
 + (id)fromJSON:(NSDictionary *)dict;
 

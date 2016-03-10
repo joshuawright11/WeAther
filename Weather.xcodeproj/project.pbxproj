@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		03405CD01C910035003AF3A8 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 03405CCF1C910035003AF3A8 /* Utilities.m */; };
+		03405CD81C91124D003AF3A8 /* RecentSearchTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03405CD71C91124D003AF3A8 /* RecentSearchTableViewCell.m */; };
 		03A7623C1C90CE42001EF59A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 03A7623B1C90CE42001EF59A /* main.m */; };
 		03A7623F1C90CE42001EF59A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03A7623E1C90CE42001EF59A /* AppDelegate.m */; };
 		03A762421C90CE42001EF59A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03A762411C90CE42001EF59A /* ViewController.m */; };
@@ -23,6 +24,8 @@
 /* Begin PBXFileReference section */
 		03405CCE1C910035003AF3A8 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
 		03405CCF1C910035003AF3A8 /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
+		03405CD61C91124D003AF3A8 /* RecentSearchTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentSearchTableViewCell.h; sourceTree = "<group>"; };
+		03405CD71C91124D003AF3A8 /* RecentSearchTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentSearchTableViewCell.m; sourceTree = "<group>"; };
 		03A762371C90CE42001EF59A /* Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		03A7623B1C90CE42001EF59A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		03A7623D1C90CE42001EF59A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -94,6 +97,8 @@
 				03A7625B1C90E6FB001EF59A /* Constants.m */,
 				03405CCE1C910035003AF3A8 /* Utilities.h */,
 				03405CCF1C910035003AF3A8 /* Utilities.m */,
+				03405CD61C91124D003AF3A8 /* RecentSearchTableViewCell.h */,
+				03405CD71C91124D003AF3A8 /* RecentSearchTableViewCell.m */,
 			);
 			path = Weather;
 			sourceTree = "<group>";
@@ -244,6 +249,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03405CD81C91124D003AF3A8 /* RecentSearchTableViewCell.m in Sources */,
 				03A762571C90E3E1001EF59A /* WeatherData.m in Sources */,
 				03A762541C90E38C001EF59A /* WebManager.m in Sources */,
 				03A762421C90CE42001EF59A /* ViewController.m in Sources */,

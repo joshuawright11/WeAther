@@ -23,6 +23,8 @@
     data.sunrise = [NSDate dateWithTimeIntervalSince1970:[dict[@"sys"][@"sunrise"] integerValue]];;
     data.sunset = [NSDate dateWithTimeIntervalSince1970:[dict[@"sys"][@"sunset"] integerValue]];;
     
+    data.searchTime = [[NSDate alloc] init];
+    
     return data;
 }
 

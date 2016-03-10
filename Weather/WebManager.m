@@ -50,8 +50,7 @@ static NSString *API_KEY_PARAMETER = @"&APPID=ae79b6cc63f8961324d6a003c6febaeb";
     [manager GET:requestURL
       parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSLog(@"JSON: %@", responseObject);
-             
+
              WeatherData *data = [WeatherData fromJSON:responseObject];
              callback(data, YES);
              

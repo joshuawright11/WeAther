@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -392,6 +393,64 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="223" id="jV4-rz-yaZ"/>
                                 </constraints>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="RecentSearchCell" rowHeight="30" id="4hH-LD-dY2" customClass="RecentSearchTableViewCell">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4hH-LD-dY2" id="5y3-4Z-tDk">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VQU-uz-Nnc">
+                                                    <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="efr-QW-8mM">
+                                                    <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="VQU-uz-Nnc" firstAttribute="centerY" secondItem="5y3-4Z-tDk" secondAttribute="centerY" id="K7R-iw-eQl"/>
+                                                <constraint firstAttribute="leadingMargin" secondItem="VQU-uz-Nnc" secondAttribute="leading" id="UTB-eA-3ZZ"/>
+                                                <constraint firstItem="efr-QW-8mM" firstAttribute="centerY" secondItem="5y3-4Z-tDk" secondAttribute="centerY" id="Udn-Yx-Rux"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="efr-QW-8mM" secondAttribute="trailing" id="mHa-e4-MXg"/>
+                                            </constraints>
+                                            <variation key="default">
+                                                <mask key="subviews">
+                                                    <exclude reference="VQU-uz-Nnc"/>
+                                                    <exclude reference="efr-QW-8mM"/>
+                                                </mask>
+                                                <mask key="constraints">
+                                                    <exclude reference="K7R-iw-eQl"/>
+                                                    <exclude reference="UTB-eA-3ZZ"/>
+                                                    <exclude reference="Udn-Yx-Rux"/>
+                                                    <exclude reference="mHa-e4-MXg"/>
+                                                </mask>
+                                            </variation>
+                                            <variation key="heightClass=regular-widthClass=compact">
+                                                <mask key="subviews">
+                                                    <include reference="VQU-uz-Nnc"/>
+                                                    <include reference="efr-QW-8mM"/>
+                                                </mask>
+                                                <mask key="constraints">
+                                                    <include reference="K7R-iw-eQl"/>
+                                                    <include reference="UTB-eA-3ZZ"/>
+                                                    <include reference="Udn-Yx-Rux"/>
+                                                    <include reference="mHa-e4-MXg"/>
+                                                </mask>
+                                            </variation>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="dataLabel" destination="efr-QW-8mM" id="Zjt-W4-bfq"/>
+                                            <outlet property="titleLabel" destination="VQU-uz-Nnc" id="4ZC-ZB-nH4"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="jV4-rz-yaZ"/>
@@ -482,8 +541,8 @@
                         <outlet property="cloudsDataLabel" destination="vIh-Jh-Jwe" id="8zu-H9-a1J"/>
                         <outlet property="dataBackgroundView" destination="b2V-bz-7iz" id="qlQ-hS-Vrq"/>
                         <outlet property="humidityDataLabel" destination="ebD-rM-FJt" id="BES-8R-GeS"/>
-                        <outlet property="recentsConstraint" destination="gzc-SM-Pgg" id="kQV-Zb-PqB"/>
                         <outlet property="recentsTableView" destination="OiQ-Ig-Xhp" id="5rG-Vu-bnA"/>
+                        <outlet property="recentsYConstraint" destination="gzc-SM-Pgg" id="L9m-0I-fQt"/>
                         <outlet property="sunBackgroundView" destination="xCO-ak-mBi" id="HUZ-QG-57p"/>
                         <outlet property="sunriseDataLabel" destination="8Rv-uW-xBO" id="u0r-Ck-huj"/>
                         <outlet property="sunsetDataLabel" destination="kGx-UR-bC2" id="oXG-rd-uZg"/>

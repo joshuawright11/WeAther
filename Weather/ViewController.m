@@ -10,6 +10,7 @@
 #import "Constants.h"
 #import "WebManager.h"
 #import "Utilities.h"
+#import "RecentSearchTableViewCell.h"
 
 @interface ViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 
@@ -31,13 +32,15 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *recentsTableView;
 
-@property (weak, nonatomic) WeatherData *currentData;
+@property (strong, nonatomic) WeatherData *currentData;
+
+@property (strong, nonatomic) NSMutableArray *recentSearches;
 
 @property (nonatomic) BOOL searchState;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *zipYConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleYConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *recentsConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *recentsYConstraint;
 
 @end
 
@@ -45,6 +48,8 @@
 
 - (void)setCurrentData:(WeatherData *)currentData {
     _currentData = currentData;
+    [self.recentSearches addObject:currentData];
+    [self.recentsTableView reloadData];
     
     self.todayLabel.text = [@"Today in " stringByAppendingString:currentData.name];
     
@@ -80,7 +85,7 @@
 - (void)moveViewsToSearchState {
     self.zipYConstraint.constant += 100;
     self.titleYConstraint.constant += 500;
-    self.recentsConstraint.constant += 300;
+    self.recentsYConstraint.constant += 300;
 }
 
 - (void)animateToDisplayState {
@@ -94,13 +99,14 @@
 - (void)moveViewsToDisplayState {
     self.zipYConstraint.constant -= 100;
     self.titleYConstraint.constant -= 500;
-    self.recentsConstraint.constant -= 300;
+    self.recentsYConstraint.constant -= 300;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self doDesign];
     self.searchState = YES;
+    self.recentSearches = [[NSMutableArray alloc] init];
 //    [self checkWeatherForInput:@"06268"];
 }
 
@@ -166,11 +172,15 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
+    return self.recentSearches.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    RecentSearchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"RecentSearchCell"];
+    
+    WeatherData *data = self.recentSearches[indexPath.row];
+    [cell configureForWeatherData:data];
+    
     return cell;
 }
 
@@ -180,6 +190,12 @@
     
     self.searchState = NO;
     
+    return YES;
+}
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    self.searchState = YES;
+    textField.text = @"";
     return YES;
 }
 
